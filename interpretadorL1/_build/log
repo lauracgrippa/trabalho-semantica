@@ -4,7 +4,7 @@
 # Workspace root:
 # "C:\\OCaml64\\home\\Bruno\\trabalho-semantica\\interpretadorL1"
 # Auto-detected concurrency: 8
-$ C:\OCaml64\home\Bruno\.opam\4.14.0+mingw64c\bin\ocamlc.opt.exe -config > C:\OCaml64\tmp\dune_7539ab_output
+$ C:\OCaml64\home\Bruno\.opam\4.14.0+mingw64c\bin\ocamlc.opt.exe -config > C:\OCaml64\tmp\dune_e72869_output
 # Dune context:
 #  { name = "default"
 #  ; kind = "default"
@@ -39,7 +39,7 @@ $ C:\OCaml64\home\Bruno\.opam\4.14.0+mingw64c\bin\ocamlc.opt.exe -config > C:\OC
 #  ; env =
 #      map
 #        { "DUNE_OCAML_HARDCODED" :
-#            "C:\\\\OCaml64\\\\home\\\\Bruno\\\\.opam\\\\4.14.0+mingw64c\\lib"
+#            "C:\\OCaml64\\home\\Bruno\\.opam\\4.14.0+mingw64c\\lib"
 #        ; "DUNE_OCAML_STDLIB" :
 #            "C:/OCaml64/home/Bruno/.opam/4.14.0+mingw64c/lib/ocaml"
 #        ; "DUNE_SOURCEROOT" :
@@ -47,20 +47,16 @@ $ C:\OCaml64\home\Bruno\.opam\4.14.0+mingw64c\bin\ocamlc.opt.exe -config > C:\OC
 #        ; "INSIDE_DUNE" :
 #            "C:\\OCaml64\\home\\Bruno\\trabalho-semantica\\interpretadorL1\\_build/default"
 #        ; "MANPATH" :
-#            "C:\\OCaml64\\home\\Bruno\\trabalho-semantica\\interpretadorL1\\_build/install/default/bin"
-#        ; "OCAML_COLOR" : "always"
+#            "c:\\OCaml64\\home\\Bruno\\trabalho-semantica\\interpretadorL1\\_build/install/default/bin"
 #        ; "OCAMLFIND_IGNORE_DUPS_IN" :
-#            "C:\\OCaml64\\home\\Bruno\\trabalho-semantica\\interpretadorL1\\_build/install/default/lib"
+#            "c:\\OCaml64\\home\\Bruno\\trabalho-semantica\\interpretadorL1\\_build/install/default/lib"
 #        ; "OCAMLPATH" :
-#            "C:\\OCaml64\\home\\Bruno\\trabalho-semantica\\interpretadorL1\\_build/install/default/lib"
+#            "c:\\OCaml64\\home\\Bruno\\trabalho-semantica\\interpretadorL1\\_build/install/default/lib"
 #        ; "OCAMLTOP_INCLUDE_PATH" :
-#            "C:\\OCaml64\\home\\Bruno\\trabalho-semantica\\interpretadorL1\\_build/install/default/lib/toplevel"
-#        ; "OPAMCOLOR" : "always"
+#            "c:\\OCaml64\\home\\Bruno\\trabalho-semantica\\interpretadorL1\\_build/install/default/lib/toplevel"
 #        }
 #  ; findlib_paths =
-#      [ External
-#          "C:\\\\OCaml64\\\\home\\\\Bruno\\\\.opam\\\\4.14.0+mingw64c\\lib"
-#      ]
+#      [ External "C:\\OCaml64\\home\\Bruno\\.opam\\4.14.0+mingw64c\\lib" ]
 #  ; arch_sixtyfour = true
 #  ; natdynlink_supported = true
 #  ; supports_shared_libraries = true
@@ -139,108 +135,148 @@ $ (cd _build/default && C:\OCaml64\home\Bruno\.opam\4.14.0+mingw64c\bin\ocamlopt
 > 8 | let rec update amb x item  =
 >             ^^^^^^
 > Error (warning 39 [unused-rec-flag]): unused rec flag.
-> File "bin/main.ml", line 202, characters 8-17:
-> 202 | let rec appconstr (s:subst) (c:equacoes_tipo) : equacoes_tipo =
+> File "bin/main.ml", line 240, characters 8-17:
+> 240 | let rec appconstr (s:subst) (c:equacoes_tipo) : equacoes_tipo =
 >               ^^^^^^^^^
 > Error (warning 39 [unused-rec-flag]): unused rec flag.
-> File "bin/main.ml", line 208, characters 8-15:
-> 208 | let rec compose (s1:subst) (s2:subst) : subst =
+> File "bin/main.ml", line 246, characters 8-15:
+> 246 | let rec compose (s1:subst) (s2:subst) : subst =
 >               ^^^^^^^
 > Error (warning 39 [unused-rec-flag]): unused rec flag.
-> File "bin/main.ml", line 64, characters 28-32:
-> 64 | type bop = Sum | Sub | Mult | Eq | Gt | Lt | Geq | Leq
+> File "bin/main.ml", line 74, characters 28-32:
+> 74 | type bop = Sum | Sub | Mult | Eq | Gt | Lt | Geq | Leq
 >                                  ^^^^
 > Error (warning 37 [unused-constructor]): constructor Eq is never used to build values.
 > (However, this constructor appears in patterns.)
-> File "bin/main.ml", line 64, characters 33-37:
-> 64 | type bop = Sum | Sub | Mult | Eq | Gt | Lt | Geq | Leq
+> File "bin/main.ml", line 74, characters 33-37:
+> 74 | type bop = Sum | Sub | Mult | Eq | Gt | Lt | Geq | Leq
 >                                       ^^^^
 > Error (warning 37 [unused-constructor]): constructor Gt is never used to build values.
 > (However, this constructor appears in patterns.)
-> File "bin/main.ml", line 64, characters 38-42:
-> 64 | type bop = Sum | Sub | Mult | Eq | Gt | Lt | Geq | Leq
+> File "bin/main.ml", line 74, characters 38-42:
+> 74 | type bop = Sum | Sub | Mult | Eq | Gt | Lt | Geq | Leq
 >                                            ^^^^
 > Error (warning 37 [unused-constructor]): constructor Lt is never used to build values.
 > (However, this constructor appears in patterns.)
-> File "bin/main.ml", line 64, characters 43-48:
-> 64 | type bop = Sum | Sub | Mult | Eq | Gt | Lt | Geq | Leq
+> File "bin/main.ml", line 74, characters 43-48:
+> 74 | type bop = Sum | Sub | Mult | Eq | Gt | Lt | Geq | Leq
 >                                                 ^^^^^
 > Error (warning 37 [unused-constructor]): constructor Geq is never used to build values.
 > (However, this constructor appears in patterns.)
-> File "bin/main.ml", line 64, characters 49-54:
-> 64 | type bop = Sum | Sub | Mult | Eq | Gt | Lt | Geq | Leq
+> File "bin/main.ml", line 74, characters 49-54:
+> 74 | type bop = Sum | Sub | Mult | Eq | Gt | Lt | Geq | Leq
 >                                                       ^^^^^
 > Error (warning 37 [unused-constructor]): constructor Leq is never used to build values.
 > (However, this constructor appears in patterns.)
-> File "bin/main.ml", line 68, characters 2-18:
-> 68 |   | Bool   of bool
->        ^^^^^^^^^^^^^^^^
+> File "bin/main.ml", line 78, characters 2-21:
+> 78 |   | Bool      of bool
+>        ^^^^^^^^^^^^^^^^^^^
 > Error (warning 37 [unused-constructor]): constructor Bool is never used to build values.
 > (However, this constructor appears in patterns.)
-> File "bin/main.ml", line 71, characters 2-25:
-> 71 |   | Pair   of expr * expr
->        ^^^^^^^^^^^^^^^^^^^^^^^
+> File "bin/main.ml", line 81, characters 2-28:
+> 81 |   | Pair      of expr * expr
+>        ^^^^^^^^^^^^^^^^^^^^^^^^^^
 > Error (warning 37 [unused-constructor]): constructor Pair is never used to build values.
 > (However, this constructor appears in patterns.)
-> File "bin/main.ml", line 72, characters 2-18:
-> 72 |   | Fst    of expr
->        ^^^^^^^^^^^^^^^^
+> File "bin/main.ml", line 82, characters 2-21:
+> 82 |   | Fst       of expr
+>        ^^^^^^^^^^^^^^^^^^^
 > Error (warning 37 [unused-constructor]): constructor Fst is never used to build values.
 > (However, this constructor appears in patterns.)
-> File "bin/main.ml", line 73, characters 2-18:
-> 73 |   | Snd    of expr
->        ^^^^^^^^^^^^^^^^
+> File "bin/main.ml", line 83, characters 2-21:
+> 83 |   | Snd       of expr
+>        ^^^^^^^^^^^^^^^^^^^
 > Error (warning 37 [unused-constructor]): constructor Snd is never used to build values.
 > (However, this constructor appears in patterns.)
-> File "bin/main.ml", line 74, characters 2-32:
-> 74 |   | If     of expr * expr * expr
->        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> File "bin/main.ml", line 84, characters 2-35:
+> 84 |   | If        of expr * expr * expr
+>        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 > Error (warning 37 [unused-constructor]): constructor If is never used to build values.
 > (However, this constructor appears in patterns.)
-> File "bin/main.ml", line 77, characters 2-33:
-> 77 |   | Let    of ident * expr * expr
->        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> File "bin/main.ml", line 85, characters 2-29:
+> 85 |   | Fn        of ident * expr
+>        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> Error (warning 37 [unused-constructor]): constructor Fn is never used to build values.
+> (However, this constructor appears in patterns.)
+> File "bin/main.ml", line 86, characters 2-28:
+> 86 |   | App       of expr * expr
+>        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+> Error (warning 37 [unused-constructor]): constructor App is never used to build values.
+> (However, this constructor appears in patterns.)
+> File "bin/main.ml", line 87, characters 2-36:
+> 87 |   | Let       of ident * expr * expr
+>        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 > Error (warning 37 [unused-constructor]): constructor Let is never used to build values.
 > (However, this constructor appears in patterns.)
-> File "bin/main.ml", line 78, characters 2-41:
-> 78 |   | LetRec of ident * ident * expr * expr
->        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> File "bin/main.ml", line 88, characters 2-44:
+> 88 |   | LetRec    of ident * ident * expr * expr
+>        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 > Error (warning 37 [unused-constructor]): constructor LetRec is never used to build values.
 > (However, this constructor appears in patterns.)
-> File "bin/main.ml", line 126, characters 5-6:
-> 126 |   | (x,(vars,tp))::t  -> (diff (ftv tp) vars)  @  (ftv_amb' t)
->            ^
-> Error (warning 27 [unused-var-strict]): unused variable x.
-> File "bin/main.ml", line 164, characters 12-13:
-> 164 | let newvar (u:unit) : int =
->                   ^
-> Error (warning 27 [unused-var-strict]): unused variable u.
-> File "bin/main.ml", line 211, characters 31-32:
-> 211 |   let r2 = List.filter (fun (x,y) -> not (List.mem x vs)) s1 in
->                                      ^
-> Error (warning 27 [unused-var-strict]): unused variable y.
-> File "bin/main.ml", line 260, characters 15-17:
-> 260 |   | (tp1,tp2)::c' -> raise (UnifyFail(tp1,tp2))
->                      ^^
-> Error (warning 27 [unused-var-strict]): unused variable c'.
-> File "bin/main.ml", line 275, characters 8-9:
-> 275 |   | Num n -> ([],TyInt)
->               ^
-> Error (warning 27 [unused-var-strict]): unused variable n.
-> File "bin/main.ml", line 277, characters 9-10:
-> 277 |   | Bool b  -> ([],TyBool)
->                ^
-> Error (warning 27 [unused-var-strict]): unused variable b.
-> File "bin/main.ml", line 357, characters 4-14:
-> 357 | let type_infer (e:expr) : unit =
+> File "bin/main.ml", line 89, characters 2-28:
+> 89 |   | Pipe      of expr * expr
+>        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+> Error (warning 37 [unused-constructor]): constructor Pipe is never used to build values.
+> (However, this constructor appears in patterns.)
+> File "bin/main.ml", line 90, characters 2-7:
+> 90 |   | Nil
+>        ^^^^^
+> Error (warning 37 [unused-constructor]): constructor Nil is never used to build values.
+> (However, this constructor appears in patterns.)
+> File "bin/main.ml", line 91, characters 2-28:
+> 91 |   | Cons      of expr * expr
+>        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+> Error (warning 37 [unused-constructor]): constructor Cons is never used to build values.
+> (However, this constructor appears in patterns.)
+> File "bin/main.ml", line 92, characters 2-51:
+> 92 |   | MatchList of expr * expr * ident * ident * expr
+>        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> Error (warning 37 [unused-constructor]): constructor MatchList is never used to build values.
+> (However, this constructor appears in patterns.)
+> File "bin/main.ml", line 93, characters 2-11:
+> 93 |   | Nothing
+>        ^^^^^^^^^
+> Error (warning 37 [unused-constructor]): constructor Nothing is never used to build values.
+> (However, this constructor appears in patterns.)
+> File "bin/main.ml", line 94, characters 2-21:
+> 94 |   | Just      of expr
+>        ^^^^^^^^^^^^^^^^^^^
+> Error (warning 37 [unused-constructor]): constructor Just is never used to build values.
+> (However, this constructor appears in patterns.)
+> File "bin/main.ml", line 95, characters 2-43:
+> 95 |   | MatchJust of expr * expr * ident * expr
+>        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> Error (warning 37 [unused-constructor]): constructor MatchJust is never used to build values.
+> (However, this constructor appears in patterns.)
+> File "bin/main.ml", line 96, characters 2-21:
+> 96 |   | Left      of expr
+>        ^^^^^^^^^^^^^^^^^^^
+> Error (warning 37 [unused-constructor]): constructor Left is never used to build values.
+> (However, this constructor appears in patterns.)
+> File "bin/main.ml", line 97, characters 2-21:
+> 97 |   | Right     of expr
+>        ^^^^^^^^^^^^^^^^^^^
+> Error (warning 37 [unused-constructor]): constructor Right is never used to build values.
+> (However, this constructor appears in patterns.)
+> File "bin/main.ml", line 98, characters 2-53:
+> 98 |   | MatchEither of expr * ident * expr * ident * expr
+>        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> Error (warning 37 [unused-constructor]): constructor MatchEither is never used to build values.
+> (However, this constructor appears in patterns.)
+> File "bin/main.ml", line 457, characters 4-14:
+> 457 | let type_infer (e:expr) : unit =
 >           ^^^^^^^^^^
 > Error (warning 32 [unused-value-declaration]): unused value type_infer.
-> File "bin/main.ml", line 402, characters 0-17:
-> 402 | exception DivZero
+> File "bin/main.ml", line 508, characters 0-17:
+> 508 | exception DivZero
 >       ^^^^^^^^^^^^^^^^^
 > Error (warning 38 [unused-extension]): unused exception DivZero
-> File "bin/main.ml", line 485, characters 4-13:
-> 485 | let run_tests () =
->           ^^^^^^^^^
-> Error (warning 32 [unused-value-declaration]): unused value run_tests.
+> File "bin/main.ml", line 523, characters 8-12:
+> 523 | let rec eval (renv:renv) (e:expr) : valor =
+>               ^^^^
+> Error (warning 32 [unused-value-declaration]): unused value eval.
+> File "bin/main.ml", line 641, characters 4-7:
+> 641 | let ys1 = Binop(Sub, Var "y", Num 1)
+>           ^^^
+> Error (warning 32 [unused-value-declaration]): unused value ys1.
 [2]
