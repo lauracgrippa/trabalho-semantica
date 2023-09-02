@@ -22,11 +22,15 @@ let diff (l1:'a list) (l2:'a list) : 'a list =
 
 (* tipos de L1 *)
 
+(* ALTERADO *)
 type tipo =
     TyInt
   | TyBool
   | TyFn     of tipo * tipo
   | TyPair   of tipo * tipo
+  | TyEither of tipo * tipo
+  | TyList   of tipo
+  | TyMaybe  of tipo
   | TyVar    of int   (* variáveis de tipo -- números *)
 
 type politipo = (int list) * tipo
@@ -34,26 +38,32 @@ type politipo = (int list) * tipo
 
 (* free type variables em um tipo *)
 
+(* ALTERADO *)
 let rec ftv (tp:tipo) : int list =
   match tp with
     TyInt
-  | TyBool -> []
+  | TyBool            -> []
   | TyFn(t1,t2)
-  | TyPair(t1,t2) ->  (ftv t1) @ (ftv t2)
-  | TyVar n      -> [n]
-
+  | TyPair(t1,t2)
+  | TyEither(t1, t2)  ->  (ftv t1) @ (ftv t2)
+  | TyList(t)
+  | TyMaybe(t)        -> (ftv t)
+  | TyVar n           -> [n]
 
 
 (* impressao legível de monotipos  *)
 
+(* ALTERADO *)
 let rec tipo_str (tp:tipo) : string =
   match tp with
     TyInt           -> "int"
   | TyBool          -> "bool"
   | TyFn   (t1,t2)  -> "("  ^ (tipo_str t1) ^ "->" ^ (tipo_str t2) ^ ")"
   | TyPair (t1,t2)  -> "("  ^ (tipo_str t1) ^  "*" ^ (tipo_str t2) ^ ")"
+  | TyEither (t1, t2) -> "either " ^ tipo_str t1 ^ " " ^ tipo_str t2
+  | TyList (t) -> tipo_str t ^ " list"
+  | TyMaybe (t) -> "Maybe " ^ tipo_str t
   | TyVar  n        -> "X" ^ (string_of_int n)
-
 
 
 
@@ -62,7 +72,7 @@ let rec tipo_str (tp:tipo) : string =
 type ident = string
 
 type bop = Sum | Sub | Mult | Eq | Gt | Lt | Geq | Leq
-
+(* ALTERAR *)
 type expr  =
     Num    of int
   | Bool   of bool
@@ -82,6 +92,7 @@ type expr  =
 
 (* impressão legível de expressão *)
 
+(* ALTERAR *)
 let rec expr_str (e:expr) : string  =
   match e with
     Num n   -> string_of_int  n
@@ -120,14 +131,14 @@ type tyenv = (ident * politipo) list
 
 (* calcula todas as variáveis de tipo livres
    do ambiente de tipos *)
+(* ALTERADO *)
 let rec ftv_amb' (g:tyenv) : int list =
   match g with
     []           -> []
-  | (x,(vars,tp))::t  -> (diff (ftv tp) vars)  @  (ftv_amb' t)
+  | (_,(vars,tp))::t  -> (diff (ftv tp) vars)  @  (ftv_amb' t)
 
 
 let ftv_amb (g:tyenv) : int list = nub (ftv_amb' g)
-
 
 
 (* equações de tipo  *)
@@ -161,7 +172,8 @@ let rec print_equacoes (c:equacoes_tipo) =
 
 let lastvar = ref 0
 
-let newvar (u:unit) : int =
+(* ALTERADO *)
+let newvar (_:unit) : int =
   let x = !lastvar
   in lastvar := (x+1) ; x
 
@@ -185,13 +197,16 @@ let rec print_subst (s:subst) =
 
 
 (* aplicação de substituição a tipo *)
-
+(* ALTERADO *)
 let rec appsubs (s:subst) (tp:tipo) : tipo =
   match tp with
     TyInt             -> TyInt
   | TyBool            -> TyBool
   | TyFn     (t1,t2)  -> TyFn     (appsubs s t1, appsubs s t2)
   | TyPair   (t1,t2)  -> TyPair   (appsubs s t1, appsubs s t2)
+  | TyEither (t1,t2)  -> TyEither (appsubs s t1, appsubs s t2)
+  | TyList   (t1)     -> TyList   (appsubs s t1)
+  | TyMaybe  (t1)     -> TyMaybe  (appsubs s t1)
   | TyVar  x        -> (match lookup s x with
         None        -> TyVar x
       | Some tp'    -> tp')
@@ -203,23 +218,26 @@ let rec appconstr (s:subst) (c:equacoes_tipo) : equacoes_tipo =
   List.map (fun (a,b) -> (appsubs s a,appsubs s b)) c
 
 
-
+(* ALTERADO *)
 (* composição de substituições: s1 o s2  *)
 let rec compose (s1:subst) (s2:subst) : subst =
   let r1 = List.map (fun (x,y) -> (x, appsubs s1 y))      s2 in
   let (vs,_) = List.split s2                                 in
-  let r2 = List.filter (fun (x,y) -> not (List.mem x vs)) s1 in
+  let r2 = List.filter (fun (x,_) -> not (List.mem x vs)) s1 in
   r1@r2
 
 
 (* testa se variável de tipo ocorre em tipo *)
-
+(* ALTERADO *)
 let rec var_in_tipo (v:int) (tp:tipo) : bool =
   match tp with
     TyInt             -> false
   | TyBool            -> false
   | TyFn     (t1,t2)  -> (var_in_tipo v t1) || (var_in_tipo v t2)
   | TyPair   (t1,t2)  -> (var_in_tipo v t1) || (var_in_tipo v t2)
+  | TyEither (t1,t2)  -> (var_in_tipo v t1) || (var_in_tipo v t2)
+  | TyList   (t1)     -> (var_in_tipo v t1)
+  | TyMaybe  (t1)     -> (var_in_tipo v t1)
   | TyVar  x          -> v=x
 
 
@@ -236,6 +254,7 @@ let rec renamevars (pltp : politipo) : tipo =
 
 exception UnifyFail of (tipo*tipo)
 
+(* ALTERADO *)
 let rec unify (c:equacoes_tipo) : subst =
   match c with
     []                                    -> []
@@ -257,7 +276,7 @@ let rec unify (c:equacoes_tipo) : subst =
           (unify (appconstr [(x2,tp1)] c'))
           [(x2,tp1)]
 
-  | (tp1,tp2)::c' -> raise (UnifyFail(tp1,tp2))
+  | (tp1,tp2)::_' -> raise (UnifyFail(tp1,tp2))
 
 
 
@@ -272,9 +291,9 @@ let rec collect (g:tyenv) (e:expr) : (equacoes_tipo * tipo)  =
          None        -> raise (CollectFail x)
        | Some pltp -> ([],renamevars pltp))  (* instancia poli *)
 
-  | Num n -> ([],TyInt)
+  | Num _ -> ([],TyInt)
 
-  | Bool b  -> ([],TyBool)
+  | Bool _  -> ([],TyBool)
 
   | Binop (o,e1,e2) ->
       if List.mem o [Sum;Sub;Mult]
@@ -476,4 +495,4 @@ let rec eval (renv:renv) (e:expr) : valor =
       let renv'= update renv f (VRclos(f,x,e1,renv))
       in eval renv' e2
 
-(* =============== ÁREA DE TESTES =============== *)
+(* ===============TESTANDO COISAS =============== *)
