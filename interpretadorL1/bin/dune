@@ -1,0 +1,4 @@
+(executable
+ (public_name interpretadorL1)
+ (name main)
+ (libraries interpretadorL1))
