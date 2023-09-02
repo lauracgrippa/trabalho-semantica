@@ -56,14 +56,14 @@ let rec ftv (tp:tipo) : int list =
 (* ALTERADO *)
 let rec tipo_str (tp:tipo) : string =
   match tp with
-    TyInt           -> "int"
-  | TyBool          -> "bool"
-  | TyFn   (t1,t2)  -> "("  ^ (tipo_str t1) ^ "->" ^ (tipo_str t2) ^ ")"
-  | TyPair (t1,t2)  -> "("  ^ (tipo_str t1) ^  "*" ^ (tipo_str t2) ^ ")"
-  | TyEither (t1, t2) -> "either " ^ tipo_str t1 ^ " " ^ tipo_str t2
-  | TyList (t) -> tipo_str t ^ " list"
-  | TyMaybe (t) -> "Maybe " ^ tipo_str t
-  | TyVar  n        -> "X" ^ (string_of_int n)
+    TyInt             -> "int"
+  | TyBool            -> "bool"
+  | TyFn   (t1,t2)    -> "("  ^ (tipo_str t1) ^ "->" ^ (tipo_str t2) ^ ")"
+  | TyPair (t1,t2)    -> "("  ^ (tipo_str t1) ^  "*" ^ (tipo_str t2) ^ ")"
+  | TyEither (t1, t2) -> "(either " ^ (tipo_str t1) ^ " " ^ (tipo_str t2) ^ ")"
+  | TyList (t)        -> (tipo_str t) ^ " list"
+  | TyMaybe (t)       -> "maybe " ^ (tipo_str t)
+  | TyVar  n          -> "X" ^ (string_of_int n)
 
 
 
@@ -257,12 +257,15 @@ exception UnifyFail of (tipo*tipo)
 (* ALTERADO *)
 let rec unify (c:equacoes_tipo) : subst =
   match c with
-    []                                    -> []
-  | (TyInt,TyInt)  ::c'                   -> unify c'
-  | (TyBool,TyBool)::c'                   -> unify c'
-  | (TyFn(x1,y1),TyFn(x2,y2))::c'         -> unify ((x1,x2)::(y1,y2)::c')
-  | (TyPair(x1,y1),TyPair(x2,y2))::c'     -> unify ((x1,x2)::(y1,y2)::c')
-  | (TyVar x1, TyVar x2)::c' when x1=x2   -> unify c'
+    []                                     -> []
+  | (TyInt,TyInt)  ::c'                    -> unify c'
+  | (TyBool,TyBool)::c'                    -> unify c'
+  | (TyFn(x1,y1),TyFn(x2,y2))::c'          -> unify ((x1,x2)::(y1,y2)::c')
+  | (TyPair(x1,y1),TyPair(x2,y2))::c'      -> unify ((x1,x2)::(y1,y2)::c')
+  | (TyEither(x1,y1),TyEither(x2,y2))::c'  -> unify ((x1,x2)::(y1,y2)::c')
+  | (TyList(x1),TyList(x2))::c'            -> unify ((x1,x2)::c')
+  | (TyMaybe(x1),TyMaybe(x2))::c'          -> unify ((x1,x2)::c')
+  | (TyVar x1, TyVar x2)::c' when x1=x2    -> unify c'
 
   | (TyVar x1, tp2)::c'                  -> if var_in_tipo x1 tp2
       then raise (UnifyFail(TyVar x1, tp2))
