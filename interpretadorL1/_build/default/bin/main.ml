@@ -66,7 +66,6 @@ let rec tipo_str (tp:tipo) : string =
   | TyVar  n          -> "X" ^ (string_of_int n)
 
 
-
 (* expressões de L1 sem anotações de tipo   *)
 
 type ident = string
@@ -89,13 +88,13 @@ type expr  =
   | Pipe      of expr * expr
   | Nil
   | Cons      of expr * expr
-  | MatchList of expr * expr * ident * ident * expr
+  | PMatchList of expr * expr * ident * ident * expr
   | Nothing
   | Just      of expr
-  | MatchJust of expr * expr * ident * expr
+  | PMatchJust of expr * expr * ident * expr
   | Left      of expr
   | Right     of expr
-  | MatchEither of expr * ident * expr * ident * expr
+  | PMatchEither of expr * ident * expr * ident * expr
 
 
 
@@ -133,17 +132,17 @@ let rec expr_str (e:expr) : string  =
   | Pipe (e1,e2) -> "( " ^ (expr_str e1) ^ "|>" ^ (expr_str e2) ^ " )"
   | Nil -> "Nil"
   | Cons (e1,e2) -> (expr_str e1) ^ "::" ^ (expr_str e2)
-  | MatchList (e1,e2,x,xs,e3) -> "match " ^ (expr_str e1) ^
+  | PMatchList (e1,e2,x,xs,e3) -> "match " ^ (expr_str e1) ^
                                 " with Nil => " ^ (expr_str e2) ^
                                 " | " ^ x ^ "::" ^ xs ^ " =>" ^ (expr_str e3)
   | Nothing -> "Nothing"
-  | Just (e1) -> "Just( " ^ (expr_str e1) ^ " )"
-  | MatchJust (e1,e2,x,e3) -> "match " ^ (expr_str e1) ^
+  | Just(e1) -> "Just( " ^ (expr_str e1) ^ " )"
+  | PMatchJust (e1,e2,x,e3) -> "match " ^ (expr_str e1) ^
                               " with Nothing => " ^ (expr_str e2) ^
                               " | Just " ^ x ^ " => " ^ (expr_str e3)
-  | Left (e1) -> "left " ^ (expr_str e1)
-  | Right (e1) -> "right " ^ (expr_str e1)
-  | MatchEither (e1,x,e2,y,e3) -> "match " ^ (expr_str e1) ^
+  | Left(e1) -> "left " ^ (expr_str e1)
+  | Right(e1) -> "right " ^ (expr_str e1)
+  | PMatchEither (e1,x,e2,y,e3) -> "match " ^ (expr_str e1) ^
                                   " with left " ^ x ^ " => " ^ (expr_str e2) ^
                                   " | right " ^ y ^ " => " ^ (expr_str e3)
 
@@ -395,20 +394,20 @@ let rec collect (g:tyenv) (e:expr) : (equacoes_tipo * tipo)  =
       let (c2,tp2) = collect g' e2                          in
       (c1@[(tp1,TyVar tB)]@c2, tp2)
 
-  | Pipe (e1, e2) ->
-      let (c1, tp1) = collect g e1 in
-      let (c2, tp2) = collect g e2 in
-      let x = newvar() in
-      (c1 @ c2 @ [(tp2, TyFn(tp1,TyVar x))], TyVar x)
+  | Pipe (e1,e2) ->
+      let (c1,tp1) = collect g e1 in
+      let (c2,tp2) = collect g e2 in
+      let tA = newvar() in
+      (c1@c2@[(tp2,TyFn(tp1,TyVar tA))],TyVar tA)
 
   | Nil -> ([], TyList( TyVar(newvar())))
 
   | Cons (e1,e2) ->
        let (c1, tp1) =  collect g e1 in
        let (c2, tp2) = collect g e2 in
-       (c1 @ c2 @ [(tp2, TyList tp1)], tp2)
+       (c1@c2@[(tp2, TyList tp1)],tp2)
 
-  | MatchList (e1, e2, x, xs, e3) ->
+  | PMatchList (e1,e2,x,xs,e3) ->
        let (c1, tp1) = collect g  e1 in
        let (c2, tp2) = collect g e2 in
        let xNew      = TyVar (newvar()) in
@@ -420,9 +419,9 @@ let rec collect (g:tyenv) (e:expr) : (equacoes_tipo * tipo)  =
 
   | Just (e) ->
      let (c1, tp1) = collect g e in
-     (c1, TyMaybe(tp1))
+     (c1,TyMaybe(tp1))
 
-  | MatchJust (e1, e2, x, e3) ->
+  | PMatchJust (e1, e2, x, e3) ->
        let (c1, tp1) = collect g  e1 in
        let (c2, tp2) = collect g e2 in
        let xNew = TyVar(newvar()) in
@@ -431,60 +430,24 @@ let rec collect (g:tyenv) (e:expr) : (equacoes_tipo * tipo)  =
        (c1@c2@c3@[(tp1, TyMaybe(xNew)); (tp2, tp3)], tp2)
 
   | Left (e1) ->
-       let (c, tp) = collect g e1 in
+       let (c,tp) = collect g e1 in
        let xNew = TyVar(newvar()) in
-       (c, TyEither(tp, xNew))
+       (c,TyEither(tp, xNew))
 
   | Right (e1) ->
-       let (c, tp) = collect g e1 in
+       let (c,tp) = collect g e1 in
        let xNew = TyVar(newvar()) in
-       (c, TyEither(xNew, tp))
+       (c,TyEither(xNew,tp))
 
-  | MatchEither (e1, x, e2, y, e3) ->
-       let (c1, tp1) = collect g  e1 in
+  | PMatchEither (e1,x,e2,y,e3) ->
+       let (c1,tp1) = collect g  e1 in
        let xNew = TyVar(newvar()) in
        let yNew = TyVar(newvar()) in
        let gx = (x, ([], xNew))::g in
-       let (c2, tp2) = collect gx e2 in
+       let (c2,tp2) = collect gx e2 in
        let gy = (y, ([], yNew))::g in
-       let (c3, tp3) = collect gy e3 in
+       let (c3,tp3) = collect gy e3 in
        (c1@c2@c3@[(tp1, TyEither(xNew, yNew)); (tp2, tp3)], tp2)
-
-
-
-(* INFERÊNCIA DE TIPOS - CHAMADA PRINCIPAL *)
-
-let type_infer (e:expr) : unit =
-  print_string "\nExpressao:\n";
-  print_string (expr_str e);
-  print_string "\n\n";
-  try
-    let (c,tp) = collect [] e  in
-    let s      = unify c       in
-    let tf     = appsubs s tp  in
-    print_string "\nEquações de tipo coletadas:\n";
-    print_equacoes c;
-    print_string "Tipo inferido: ";
-    print_string (tipo_str tp);
-    print_string "\n\nSubstituição produzida por unify:\n";
-    print_subst s;
-    print_string "Tipo inferido (após subs): ";
-    print_string (tipo_str tf);
-    print_string "\n\n"
-
-  with
-
-  | CollectFail x   ->
-      print_string "Erro: variavel ";
-      print_string x;
-      print_string " nao declarada!\n\n"
-
-  | UnifyFail (tp1,tp2) ->
-      print_string "Erro: impossível unificar os tipos\n* ";
-      print_string (tipo_str tp1);
-      print_string "\n* ";
-      print_string (tipo_str tp2);
-      print_string "\n\n"
 
 
         (*===============================================*)
@@ -506,6 +469,23 @@ and
 
 exception BugTypeInfer
 exception DivZero
+
+
+(* ALTERADO *)
+let rec valor_str (v:valor) : string =
+  match v with
+    VNum n            -> string_of_int n
+  | VBool _           -> "bool"
+  | VPair(v1,v2)     -> "(" ^ valor_str v1 ^ "," ^ valor_str v2 ^ ")"
+  | VClos _           -> "fn"
+  | VRclos _          -> "fn"
+  | VNil              -> "Nil"
+  | VList(v1,v2)     -> "(" ^ valor_str v1 ^ "," ^ valor_str v2 ^ ")"
+  | VJust(v1)         -> "(" ^ valor_str v1 ^ ")"
+  | VNothing          -> "nothing"
+  | VLeft(v1)         -> "(" ^ valor_str v1 ^ ")"
+  | VRight(v1)        -> "(" ^ valor_str v1 ^ ")"
+
 
 let compute (oper: bop) (v1: valor) (v2: valor) : valor =
   match (oper, v1, v2) with
@@ -603,7 +583,7 @@ let rec eval (renv:renv) (e:expr) : valor =
       let v2 = eval renv e2 in
       VList(v1,v2)
 
-  | MatchList (e1,e2,x,xs,e3) ->
+  | PMatchList (e1,e2,x,xs,e3) ->
     let v1 = eval renv e1 in
     (match v1 with
     | VNil -> eval renv e2
@@ -616,7 +596,7 @@ let rec eval (renv:renv) (e:expr) : valor =
       let v1 = eval renv e1 in
       VJust(v1)
 
-  | MatchJust(e1, e2, x, e3) ->
+  | PMatchJust(e1,e2,x,e3) ->
       let v1 = eval renv e1 in
       (match v1 with
       | VNothing -> eval renv e2
@@ -627,19 +607,87 @@ let rec eval (renv:renv) (e:expr) : valor =
 
   | Right(e1) -> VRight (eval renv e1)
 
-  | MatchEither (e1,x,e2,y,e3) ->
+  | PMatchEither (e1,x,e2,y,e3) ->
       let v1 = eval renv e1 in
       (match v1 with
       | VLeft (v) -> eval (update renv x v) e2
       | VRight (v) -> eval (update renv y v) e3
       | _ -> raise BugTypeInfer )
 
+(* INFERÊNCIA DE TIPOS - CHAMADA PRINCIPAL *)
+
+let type_infer (e:expr) : unit =
+  print_string "\nExpressao:\n";
+  print_string (expr_str e);
+  (* print_string ""; *)
+  try
+    let (c,tp) = collect [] e  in
+    let s      = unify c       in
+    let tf     = appsubs s tp  in
+    let v = eval [] e          in
+    print_string "\n\nResultado: ";
+    print_string (valor_str v);
+    print_string "\n\nEquacoes de tipo coletadas:\n";
+    print_equacoes c;
+    print_string "Tipo inferido: ";
+    print_string (tipo_str tp);
+    print_string "\n\nSubstituicao produzida por unify:\n";
+    print_subst s;
+    print_string "Tipo inferido (apos subs): ";
+    print_string (tipo_str tf);
+    print_string "\n\n"
+
+  with
+
+  | CollectFail x   ->
+      print_string "Erro: variavel ";
+      print_string x;
+      print_string " nao declarada!\n\n"
+
+  | UnifyFail (tp1,tp2) ->
+      print_string "Erro: impossível unificar os tipos\n* ";
+      print_string (tipo_str tp1);
+      print_string "\n* ";
+      print_string (tipo_str tp2);
+      print_string "\n\n"
+
+(* =============== ÁREA DE TESTES =============== *)
+
+(* Teste 1 *)
+let sum2 = Binop(Sum, Num(10), Num(12))
+
+(* Teste 2 *)
+(*
+     let x:int = 2
+     in let foo: int --> int = fn y:int => x + y
+        in let x: int = 5
+           in foo 10
+*)
 
 
-(* ===============TESTANDO COISAS =============== *)
 
-let ys1 = Binop(Sub, Var "y", Num 1)
+(* Teste Pair and Fst | Valor: 64*)
+let tFst1 = Fst(Pair(Num(64), Bool(false)))
+
+(* Teste Pair and Snd | Valor: false*)
+let tSnd1 = Snd(Pair(Num(64), Bool(false)))
+
+(* ----- *)
+
+(* Teste If then Else True | Valor: 1*)
+let tIF1 = If (Bool(true), Num(1), Num(2))
+
+(* Teste If then Else False | Valor: 2*)
+let tIF2 = If (Bool(false), Num(1), Num(2))
+
+(* ----- *)
+
+(* Teste Let, Fn, Binop | Valor: 12*)
+let e'' = Let("x", Num 5, App(Var "foo", Num 10))
+let e'  = Let("foo", Fn("y", Binop(Sum, Var "x", Var "y")), e'')
+let tst = Let("x", Num(2), e')
+
+(* ----- *)
 
 
-
-(* type_infer (e:expr) *)
+(* type_infer(tst);; *)
