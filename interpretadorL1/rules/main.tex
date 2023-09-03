@@ -227,21 +227,21 @@ v_{bs} & ::= & n  ~ | ~ b ~ | ~ \langle x, e, \env \rangle  ~ | ~ \langle f, x, 
 
 \infrule[BS-EmptyFls]{\env \vdash e  \Downarrow v \sintaxe{::} vs}{\env \vdash \EMPTY\ e \Downarrow \FALSE}
 
-\infrule[BS-MatchList1]{\env \vdash e  \Downarrow  \NIL : T  ~   \LIST \andalso \env \vdash e_1  \Downarrow v}{\env \vdash \MATCH \ e \ \WITH\\ \NIL : T  ~   \LIST \Rightarrow e_1 \\ \sintaxe{|}\  x\sintaxe{::} xs \Rightarrow \ e_2 \Downarrow v}
+\infrule[BS-MatchList1]{\env \vdash e  \Downarrow  \NIL \andalso \env \vdash e_1  \Downarrow v}{\env \vdash \MATCH \ e \ \WITH\\ \NIL \Rightarrow e_1 \\ \sintaxe{|}\  x\sintaxe{::} xs \Rightarrow \ e_2 \Downarrow v}
 
-\infrule[BS-MatchList2]{\env \vdash e  \Downarrow \ v\sintaxe{::} vs \andalso \env, x \mapsto v \sintaxe{;} xs \vdash vs \andalso \vdash e_2 \Downarrow v}{\env \vdash \MATCH \ e \ \WITH\\ \NIL : T  ~   \LIST \Rightarrow e_1 \\ \sintaxe{|}\  v\sintaxe{::} vs \Rightarrow \ e_2 \Downarrow v}
+\infrule[BS-MatchList2]{\env \vdash e  \Downarrow \ v\sintaxe{::} vs \andalso \env, x \mapsto v \sintaxe{;} xs \vdash vs \andalso \vdash e_2 \Downarrow v}{\env \vdash \MATCH \ e \ \WITH\\ \NIL \Rightarrow e_1 \\ \sintaxe{|}\  x\sintaxe{::} xs \Rightarrow \ e_2 \Downarrow v}
 
 \infrule[BS-Pipe]{\env \vdash e_1 \Downarrow v_1 }{\env \vdash e_1 {\small{|}}\!\!> e_2  \Downarrow \env \vdash v_1 {\small{|}}\!\!> e_2}
 
 \infax[BS-Nothing]{\env \vdash \NOTHING \Downarrow \NOTHING}
 
-\infrule[BS-MatchJust]{}{}
+\infrule[BS-MatchMaybe]{\env \vdash e_1 \Downarrow \MAYBE  \andalso \env, ~ x\mapsto e_3}{\env \vdash \MATCH \ e_1 \ \WITH\\ \NOTHING  \Rightarrow e_2 \\ \sintaxe{|}\ \JUST ~ x \Rightarrow \ e_3}
 
 \infrule[BS-Left]{\env \vdash e \Downarrow \langle v_1, v_2 \rangle }{\env \vdash \LEFT\ e \Downarrow v_1}
 
 \infrule[BS-Right]{\env \vdash e \Downarrow \langle v_1, v_2 \rangle }{\env \vdash \RIGHT\ e \Downarrow v_2}
 
-\infrule[BS-MatchEither]{}{}
+\infrule[BS-MatchEither]{\env \vdash e_1 \Downarrow \EITHER  \andalso \env, x\mapsto e_2 \andalso \env, y\mapsto e_3}{\env \vdash \MATCH \ e_1 \ \WITH\\ \sintaxe{|} ~ \LEFT  ~  x \Rightarrow e_2 \\ \sintaxe{|}\ \RIGHT ~ y \Rightarrow \ e_3}
 
 
 \end{document}
