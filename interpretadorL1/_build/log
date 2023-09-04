@@ -4,7 +4,7 @@
 # Workspace root:
 # "C:\\OCaml64\\home\\Bruno\\trabalho-semantica\\interpretadorL1"
 # Auto-detected concurrency: 8
-$ C:\OCaml64\home\Bruno\.opam\4.14.0+mingw64c\bin\ocamlc.opt.exe -config > C:\OCaml64\tmp\dune_586945_output
+$ C:\OCaml64\home\Bruno\.opam\4.14.0+mingw64c\bin\ocamlc.opt.exe -config > C:\OCaml64\tmp\dune_d7c26c_output
 # Dune context:
 #  { name = "default"
 #  ; kind = "default"
@@ -178,16 +178,6 @@ $ (cd _build/default && C:\OCaml64\home\Bruno\.opam\4.14.0+mingw64c\bin\ocamlopt
 >        ^^^^^^^^^^^^^^^^^^^^^^^^^^
 > Error (warning 37 [unused-constructor]): constructor Pipe is never used to build values.
 > (However, this constructor appears in patterns.)
-> File "bin/main.ml", line 89, characters 2-7:
-> 89 |   | Nil
->        ^^^^^
-> Error (warning 37 [unused-constructor]): constructor Nil is never used to build values.
-> (However, this constructor appears in patterns.)
-> File "bin/main.ml", line 90, characters 2-28:
-> 90 |   | Cons      of expr * expr
->        ^^^^^^^^^^^^^^^^^^^^^^^^^^
-> Error (warning 37 [unused-constructor]): constructor Cons is never used to build values.
-> (However, this constructor appears in patterns.)
 > File "bin/main.ml", line 91, characters 2-52:
 > 91 |   | PMatchList of expr * expr * ident * ident * expr
 >        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -203,10 +193,10 @@ $ (cd _build/default && C:\OCaml64\home\Bruno\.opam\4.14.0+mingw64c\bin\ocamlopt
 >        ^^^^^^^^^^^^^^^^^^^
 > Error (warning 37 [unused-constructor]): constructor Just is never used to build values.
 > (However, this constructor appears in patterns.)
-> File "bin/main.ml", line 94, characters 2-44:
-> 94 |   | PMatchJust of expr * expr * ident * expr
->        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> Error (warning 37 [unused-constructor]): constructor PMatchJust is never used to build values.
+> File "bin/main.ml", line 94, characters 2-45:
+> 94 |   | PMatchMaybe of expr * expr * ident * expr
+>        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> Error (warning 37 [unused-constructor]): constructor PMatchMaybe is never used to build values.
 > (However, this constructor appears in patterns.)
 > File "bin/main.ml", line 95, characters 2-21:
 > 95 |   | Left      of expr
@@ -255,4 +245,8 @@ $ (cd _build/default && C:\OCaml64\home\Bruno\.opam\4.14.0+mingw64c\bin\ocamlopt
 > 688 | let tst = Let("x", Num(2), e')
 >           ^^^
 > Error (warning 32 [unused-value-declaration]): unused value tst.
+> File "bin/main.ml", line 694, characters 4-7:
+> 694 | let pml = (Num 7,Cons (Num 7, Nil),"x","xs",Num 4)
+>           ^^^
+> Error (warning 32 [unused-value-declaration]): unused value pml.
 [2]

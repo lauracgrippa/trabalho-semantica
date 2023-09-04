@@ -1,3 +1,8 @@
+(* Integrantes *)
+(* Bruno Oliveira Guilhem - 00308691 *)
+(* Davi Haas Rodrigues - 00288844 *)
+(* Laura Cárdenas Grippa - 00219351 *)
+
 (* auxiliares *)
 
 let rec lookup amb x  =
@@ -664,8 +669,6 @@ let sum2 = Binop(Sum, Num(10), Num(12))
            in foo 10
 *)
 
-
-
 (* Teste Pair and Fst | Valor: 64*)
 let tFst1 = Fst(Pair(Num(64), Bool(false)))
 
@@ -689,5 +692,7 @@ let tst = Let("x", Num(2), e')
 
 (* ----- *)
 
+(* Teste Cons *)
+let lst = Cons(Num(3), Cons(Num(4), Cons(Num(5), Nil)))
 
-(* type_infer(tst);; *)
+(* ----- *)

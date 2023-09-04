@@ -91,7 +91,7 @@ type expr  =
   | PMatchList of expr * expr * ident * ident * expr
   | Nothing
   | Just      of expr
-  | PMatchJust of expr * expr * ident * expr
+  | PMatchMaybe of expr * expr * ident * expr
   | Left      of expr
   | Right     of expr
   | PMatchEither of expr * ident * expr * ident * expr
@@ -137,7 +137,7 @@ let rec expr_str (e:expr) : string  =
                                 " | " ^ x ^ "::" ^ xs ^ " =>" ^ (expr_str e3)
   | Nothing -> "Nothing"
   | Just(e1) -> "Just( " ^ (expr_str e1) ^ " )"
-  | PMatchJust (e1,e2,x,e3) -> "match " ^ (expr_str e1) ^
+  | PMatchMaybe (e1,e2,x,e3) -> "match " ^ (expr_str e1) ^
                               " with Nothing => " ^ (expr_str e2) ^
                               " | Just " ^ x ^ " => " ^ (expr_str e3)
   | Left(e1) -> "left " ^ (expr_str e1)
@@ -421,7 +421,7 @@ let rec collect (g:tyenv) (e:expr) : (equacoes_tipo * tipo)  =
      let (c1, tp1) = collect g e in
      (c1,TyMaybe(tp1))
 
-  | PMatchJust (e1, e2, x, e3) ->
+  | PMatchMaybe (e1, e2, x, e3) ->
        let (c1, tp1) = collect g  e1 in
        let (c2, tp2) = collect g e2 in
        let xNew = TyVar(newvar()) in
@@ -596,7 +596,7 @@ let rec eval (renv:renv) (e:expr) : valor =
       let v1 = eval renv e1 in
       VJust(v1)
 
-  | PMatchJust(e1,e2,x,e3) ->
+  | PMatchMaybe(e1,e2,x,e3) ->
       let v1 = eval renv e1 in
       (match v1 with
       | VNothing -> eval renv e2
@@ -689,5 +689,8 @@ let tst = Let("x", Num(2), e')
 
 (* ----- *)
 
+(* let lst = Cons( Cons(Num 10, Cons(Num 5, Cons(Num 98, Nil)), Nil)) *)
+
+let pml = (Num 7,Cons (Num 7, Nil),"x","xs",Num 4)
 
 (* type_infer(tst);; *)
